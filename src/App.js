@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Square({ value, onSquareClick }) {
 
@@ -21,7 +23,7 @@ function Row({ n, index, value, onSquareClick }) {
   );
 }
 
-function Board({ xIsNext, squares, onPlay, n }) {
+function Board({ xIsNext, squares, onPlay, n, player1, player2 }) {
   const items = Array(n).fill(null);
 
   function handleClick(i) {
@@ -39,10 +41,40 @@ function Board({ xIsNext, squares, onPlay, n }) {
   const winner = calculateWinner(squares, n);
   let status;
   if (winner) {
-    status = "Ganador: " + winner;
+    status = "Ganador: " + (winner == "X"? player1 : player2);
   } else {
-    status = "Siguiente Jugador: " + (xIsNext ? "X" : "O");
+    status = "Turno actual: " + (xIsNext ? player1 + " (X)" : player2 + " (O)");
   }
+
+  useEffect(() => {
+    if (!winner) {
+      toast.info(
+        "Turno de " + (xIsNext ? `${player1} (X)` : `${player2} (O)`),
+        {
+          position: "top-center",
+          autoClose: 500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "dark",
+          toastId: "turn-toast",
+        }
+      );
+    } else {
+      toast.success(
+        `¡Felicitaciones ${winner == "X"? player1 : player2}, has ganado!`,
+        {
+          position: "top-center",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "dark",
+          toastId: "turn-toast",
+        }
+      );
+    }
+  }, [xIsNext, winner, player1, player2]);
 
   return (
     <>
@@ -52,6 +84,52 @@ function Board({ xIsNext, squares, onPlay, n }) {
       }
     </>
   );
+}
+
+function Menu({ setN, setPlayer1, setPlayer2, handleReady }) {
+
+  const [len, setLen] = useState(3);
+  const [p1, setP1] = useState("")
+  const [p2, setP2] = useState("");
+
+  function handleStart() {
+    if (Number(len) > 1 && p1 && p2) {
+      setN(Number(len));
+      setPlayer1(p1);
+      setPlayer2(p2);
+      handleReady()
+    } else {
+      if (!p1 || !p2) toast.error("Debes ingresar los jugadores", {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "dark",
+      });
+      else if (Number(len) <= 1) toast.error("Debes ingresar un tamaño de 3 o más", {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "dark",
+      });
+    }
+  }
+
+  return (
+    <main>
+      <h1>Tic-Tac-Toe</h1>
+      <h3>Tamaño del tablero</h3>
+      <input value={len} onChange={(e) => setLen(e.target.value)} />
+      <h3>Nombre del jugador X</h3>
+      <input value={p1} onChange={(e) => setP1(e.target.value)} />
+      <h3>Nombre del jugador O</h3>
+      <input value={p2} onChange={(e) => setP2(e.target.value)} />
+      <button onClick={handleStart}>Jugar</button>
+    </main>
+  )
 }
 
 function calculateWinner(squares, n) {
@@ -108,23 +186,27 @@ function calculateWinner(squares, n) {
 }
 
 export default function Game() {
-  const n = 4;
+  const [n, setN] = useState(3);
+  const [player1, setPlayer1] = useState("")
+  const [player2, setPlayer2] = useState("");
   const [history, setHistory] = useState([Array(n * n).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+  const [isReady, setIsReady] = useState(false);
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
+    
   }
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
   }
 
-  const moves = history.map((squares, move) => {
+  const moves = history.map((_, move) => {
     let description;
     if (move > 0) {
       description = 'Ir al movimiento #' + move
@@ -138,15 +220,24 @@ export default function Game() {
       </li>
     );
   });
-
-  return (
-    <main className="game">
-      <section className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} n={n} />
-      </section>
-      <section className="game-info">
-        <ol>{moves}</ol>
-      </section>
-    </main>
-  )
+  if (isReady) {
+    return (
+      <>
+        <main className="game">
+          <section className="game-board">
+            <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} n={n} player1={player1} player2={player2} />
+          </section>
+          <section className="game-info">
+            <ol>{moves}</ol>
+          </section>
+        </main>
+        <ToastContainer/>
+      </>
+    );
+  } else {
+    return <>
+      <Menu setN={setN} setPlayer1={setPlayer1} setPlayer2={setPlayer2} handleReady={() => setIsReady(true)} />
+      <ToastContainer />
+    </>
+  }
 }
