@@ -1,46 +1,71 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+/* Fondo general */
 body {
   margin: 0;
+  padding: 20px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
   color: #eaeaf0;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
-/* Layout */
+/* Layout principal */
+main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .game {
   display: flex;
   gap: 40px;
 }
 
 /* Paneles */
-.game-board, .game-info {
-  background: rgba(30, 30, 60, 0.8);
-  backdrop-filter: blur(10px);
+.game-board,
+.game-info {
+  background: rgba(30, 30, 60, 0.85);
+  backdrop-filter: blur(12px);
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 0 30px rgba(0,0,0,0.6);
 }
 
-/* Board */
-.board-row {
-  display: flex;
+/* IMPORTANTE: evita que tableros grandes rompan la UI */
+.game-board {
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
 }
 
-/* Casillas */
+/* Filas */
+.board-row {
+  display: flex;
+  justify-content: center;
+}
+
 .square {
-  width: 65px;
-  height: 65px;
-  margin: 6px;
-  font-size: 26px;
+  width: clamp(60px, 6vw, 140px);
+  height: clamp(60px, 6vw, 140px);
+  font-size: clamp(24px, 2vw, 50px);
   font-weight: bold;
+
   background: linear-gradient(145deg, #2a2a4a, #1c1c34);
   border: 1px solid rgba(255,255,255,0.05);
   border-radius: 12px;
   color: #fff;
   cursor: pointer;
+
   transition: all 0.25s ease;
 }
 
@@ -58,7 +83,15 @@ body {
   text-align: center;
 }
 
-/* Botones */
+/* Contador */
+.turn-counter {
+  font-size: 16px;
+  margin-bottom: 10px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Botones generales */
 button {
   padding: 10px 15px;
   margin-top: 10px;
@@ -74,7 +107,7 @@ button:hover {
   box-shadow: 0 0 10px #6c63ff;
 }
 
-/* Reset */
+/* Botones específicos */
 .reset-btn {
   width: 100%;
   margin-bottom: 10px;
@@ -99,29 +132,81 @@ button:hover {
   background: linear-gradient(135deg, #6c63ff, #8f86ff);
 }
 
-/* Contador */
-.turn-counter {
-  font-size: 16px;
-  margin-bottom: 10px;
-  text-align: center;
-  opacity: 0.8;
-}
-
 /* Historial */
 .game-info ol {
   padding-left: 20px;
+  max-height: 300px;
+  overflow-y: auto;
 }
+
+/* Menu */
 .menuContainer {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
+
+/* Inputs */
 input {
   padding: 10px;
   border-radius: 20px;
+  border: none;
+  outline: none;
 }
-input:hover {
-  box-shadow: 0 0 10px #6c63ff;
-}
+
+input:hover,
 input:focus {
   box-shadow: 0 0 10px #6c63ff;
+}
+
+/* 📱 RESPONSIVE (celulares) */
+@media (max-width: 900px) {
+  .game {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .game-info {
+    width: 100%;
+  }
+
+  .game-board {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1600px) {
+  body {
+    font-size: 18px;
+  }
+
+  .status {
+    font-size: 24px;
+  }
+
+  .turn-counter {
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 18px;
+    padding: 12px 18px;
+  }
+
+  input {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .game-board {
+    max-width: none;
+    max-height: none;
+  }
+}
+
+@media (min-width: 2000px) {
+  .game {
+    transform: scale(1.3);
+  }
 }
