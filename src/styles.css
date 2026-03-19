@@ -1,90 +1,95 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
-  font-family: sans-serif;
-  margin: 20px;
-  padding: 0;
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
+  color: #eaeaf0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-h1 {
-  margin-top: 0;
-  font-size: 22px;
-}
-
-h2 {
-  margin-top: 0;
-  font-size: 20px;
-}
-
-h3 {
-  margin-top: 0;
-  font-size: 18px;
-}
-
-h4 {
-  margin-top: 0;
-  font-size: 16px;
-}
-
-h5 {
-  margin-top: 0;
-  font-size: 14px;
-}
-
-h6 {
-  margin-top: 0;
-  font-size: 12px;
-}
-
-code {
-  font-size: 1.2em;
-}
-
-ul {
-  padding-inline-start: 20px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: sans-serif;
-  margin: 20px;
-  padding: 0;
-}
-
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
-}
-
-.board-row:after {
-  clear: both;
-  content: '';
-  display: table;
-}
-
-.status {
-  margin-bottom: 10px;
-}
+/* Layout */
 .game {
   display: flex;
-  flex-direction: row;
+  gap: 40px;
 }
 
-.game-info {
-  margin-left: 20px;
+/* Paneles */
+.game-board, .game-info {
+  background: rgba(30, 30, 60, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.6);
+}
+
+/* Board */
+.board-row {
+  display: flex;
+}
+
+/* Casillas */
+.square {
+  width: 65px;
+  height: 65px;
+  margin: 6px;
+  font-size: 26px;
+  font-weight: bold;
+  background: linear-gradient(145deg, #2a2a4a, #1c1c34);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.square:hover {
+  background: #5b5bff;
+  transform: scale(1.08);
+  box-shadow: 0 0 12px #6c63ff;
+}
+
+/* Estado */
+.status {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Botones */
+button {
+  padding: 10px 15px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6c63ff, #8f86ff);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px #6c63ff;
+}
+
+/* Reset */
+.reset-btn {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Contador */
+.turn-counter {
+  font-size: 16px;
+  margin-bottom: 10px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Historial */
+.game-info ol {
+  padding-left: 20px;
 }

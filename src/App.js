@@ -39,10 +39,13 @@ function Board({ xIsNext, squares, onPlay, n, player1, player2 }) {
   }
 
   const winner = calculateWinner(squares, n);
+  const isDraw = !winner && squares.every(square => square !== null);
   let status;
   if (winner) {
     status = "Ganador: " + (winner == "X"? player1 : player2);
-  } else {
+  } else if (isDraw) {
+  status = "Empate 🤝";}
+  else {
     status = "Turno actual: " + (xIsNext ? player1 + " (X)" : player2 + " (O)");
   }
 
@@ -60,20 +63,33 @@ function Board({ xIsNext, squares, onPlay, n, player1, player2 }) {
           toastId: "turn-toast",
         }
       );
-    } else {
-      toast.success(
-        `¡Felicitaciones ${winner == "X"? player1 : player2}, has ganado!`,
-        {
-          position: "top-center",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          theme: "dark",
-          toastId: "turn-toast",
-        }
-      );
-    }
+    } if (isDraw) {
+    toast.info(
+      "¡La partida terminó en empate! 🤝",
+      {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "dark",
+        toastId: "draw-toast",
+      }
+    );
+  }else {
+        toast.success(
+          `¡Felicitaciones ${winner == "X"? player1 : player2}, has ganado!`,
+          {
+            position: "top-center",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: "dark",
+            toastId: "turn-toast",
+          }
+        );
+      }
   }, [xIsNext, winner, player1, player2]);
 
   return (
@@ -194,7 +210,11 @@ export default function Game() {
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
   const [isReady, setIsReady] = useState(false);
-
+  const turnCount = currentMove;
+  function handleReset() {
+    setHistory([Array(n * n).fill(null)]);
+    setCurrentMove(0);
+  }
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
@@ -225,6 +245,10 @@ export default function Game() {
       <>
         <main className="game">
           <section className="game-board">
+            <p className="turn-counter">Turnos jugados: {turnCount}</p>
+            <button className="reset-btn" onClick={handleReset}>
+              Reiniciar partida
+            </button>
             <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} n={n} player1={player1} player2={player2} />
           </section>
           <section className="game-info">
