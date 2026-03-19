@@ -42,9 +42,10 @@ function Board({ xIsNext, squares, onPlay, n, player1, player2 }) {
   const isDraw = !winner && squares.every(square => square !== null);
   let status;
   if (winner) {
-    status = "Ganador: " + (winner == "X"? player1 : player2);
+    status = "Ganador: " + (winner == "X" ? player1 : player2);
   } else if (isDraw) {
-  status = "Empate 🤝";}
+    status = "Empate 🤝";
+  }
   else {
     status = "Turno actual: " + (xIsNext ? player1 + " (X)" : player2 + " (O)");
   }
@@ -64,32 +65,32 @@ function Board({ xIsNext, squares, onPlay, n, player1, player2 }) {
         }
       );
     } if (isDraw) {
-    toast.info(
-      "¡La partida terminó en empate! 🤝",
-      {
-        position: "top-center",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        theme: "dark",
-        toastId: "draw-toast",
-      }
-    );
-  }else {
-        toast.success(
-          `¡Felicitaciones ${winner == "X"? player1 : player2}, has ganado!`,
-          {
-            position: "top-center",
-            autoClose: 2500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            theme: "dark",
-            toastId: "turn-toast",
-          }
-        );
-      }
+      toast.info(
+        "¡La partida terminó en empate! 🤝",
+        {
+          position: "top-center",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "dark",
+          toastId: "draw-toast",
+        }
+      );
+    } else {
+      toast.success(
+        `¡Felicitaciones ${winner == "X" ? player1 : player2}, has ganado!`,
+        {
+          position: "top-center",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "dark",
+          toastId: "turn-toast",
+        }
+      );
+    }
   }, [xIsNext, winner, player1, player2]);
 
   return (
@@ -109,7 +110,7 @@ function Menu({ setN, setPlayer1, setPlayer2, handleReady }) {
   const [p2, setP2] = useState("");
 
   function handleStart() {
-    if (Number(len) > 1 && p1 && p2) {
+    if (Number(len) > 2 && p1 && p2) {
       setN(Number(len));
       setPlayer1(p1);
       setPlayer2(p2);
@@ -123,7 +124,7 @@ function Menu({ setN, setPlayer1, setPlayer2, handleReady }) {
         pauseOnHover: true,
         theme: "dark",
       });
-      else if (Number(len) <= 1) toast.error("Debes ingresar un tamaño de 3 o más", {
+      else if (Number(len) <= 2) toast.error("Debes ingresar un tamaño de 3 o más", {
         position: "top-center",
         autoClose: 2500,
         hideProgressBar: false,
@@ -135,7 +136,7 @@ function Menu({ setN, setPlayer1, setPlayer2, handleReady }) {
   }
 
   return (
-    <main>
+    <main className="menuContainer">
       <h1>Tic-Tac-Toe</h1>
       <h3>Tamaño del tablero</h3>
       <input value={len} onChange={(e) => setLen(e.target.value)} />
@@ -143,7 +144,7 @@ function Menu({ setN, setPlayer1, setPlayer2, handleReady }) {
       <input value={p1} onChange={(e) => setP1(e.target.value)} />
       <h3>Nombre del jugador O</h3>
       <input value={p2} onChange={(e) => setP2(e.target.value)} />
-      <button onClick={handleStart}>Jugar</button>
+      <button className="play-btn" onClick={handleStart}>Jugar</button>
     </main>
   )
 }
@@ -219,7 +220,7 @@ export default function Game() {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
-    
+
   }
 
   function jumpTo(nextMove) {
@@ -236,7 +237,7 @@ export default function Game() {
 
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        <button className="jump-btn" onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
   });
@@ -245,6 +246,7 @@ export default function Game() {
       <>
         <main className="game">
           <section className="game-board">
+            <button className="back-btn" onClick={() => setIsReady(false)}>Regresar al menú</button>
             <p className="turn-counter">Turnos jugados: {turnCount}</p>
             <button className="reset-btn" onClick={handleReset}>
               Reiniciar partida
@@ -255,7 +257,7 @@ export default function Game() {
             <ol>{moves}</ol>
           </section>
         </main>
-        <ToastContainer/>
+        <ToastContainer />
       </>
     );
   } else {
